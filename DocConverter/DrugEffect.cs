@@ -24,5 +24,10 @@ namespace DocConverter
             Units = items[2];
             Interpretation = items[3];
         }
+
+        public override string ToString()
+        {
+            return string.Join(",", Drug, IC50, Units, Interpretation);
+        }
     }
 }

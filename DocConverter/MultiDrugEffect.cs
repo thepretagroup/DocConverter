@@ -16,5 +16,10 @@
             Interpretation = items[4];
             Synergy = items[5];
         }
+
+        public override string ToString()
+        {
+            return string.Join(",", Drug, Ratio, IC50, Units, Interpretation, Synergy);
+        }
     }
 }
