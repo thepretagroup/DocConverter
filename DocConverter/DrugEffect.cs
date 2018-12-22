@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DocConverter
+﻿namespace DocConverter
 {
     public class DrugEffect
     {
-        public string Drug { get; set; }
-        public string IC50 { get; set; }
-        public string Units { get; set; }
-        public string Interpretation { get; set; }
+        public string Drug { get; protected set; }
+        public string IC50 { get; protected set; }
+        public string Units { get; protected set; }
+        public string Interpretation { get; protected set; }
 
         protected DrugEffect() {}
 
@@ -19,15 +13,20 @@ namespace DocConverter
         {
             var items = drugEntryLine.Split('\t');
 
-            Drug = items[0];
+            Drug = items[0].Trim();
             IC50 = items[1];
             Units = items[2];
             Interpretation = items[3];
         }
 
-        public override string ToString()
+        public void ExtendDrugName(string line)
         {
-            return string.Join(",", Drug, IC50, Units, Interpretation);
+            Drug += " " + line;
+        }
+
+        public virtual string TextReportLine()
+        {
+            return string.Join("|", Drug, IC50, Units, Interpretation);
         }
     }
 }

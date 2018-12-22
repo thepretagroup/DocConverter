@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using GemBox.Document;
-
 namespace DocConverter
 {
     class Sample
@@ -10,22 +6,18 @@ namespace DocConverter
         [STAThread]
         static void Main(string[] args)
         {
-            var rtfFile = @"C:\Users\dhfra\Documents\GitHub\DocConverter\input file.rtf";
+            var rtfFile = @"C:\Users\dhfra\Documents\GitHub\DocConverter\TestFiles\input file.rtf";
 
             var paragraphs = RtfReader.ReadParagraphs(rtfFile);
 
             var report = new Report(paragraphs);
 
-            Console.WriteLine(report.ToString());
+            Console.WriteLine();
+            Console.WriteLine(">>>> TextReport <<<<");
+            Console.WriteLine();
 
-            //foreach (var line in paragraphs)
-            //{
-            //    Console.WriteLine(line);
-            //}
-
-            //RTFtoTxt();
+            Console.WriteLine(report.TextReport());
         }
-
     }
 }
 
