@@ -10,13 +10,17 @@ namespace DocConverter
 
             var paragraphs = RtfReader.ReadParagraphs(rtfFile);
 
-            var report = new Report(paragraphs);
+            var report = new Report();
+            report.Parse(paragraphs);
 
             Console.WriteLine();
             Console.WriteLine(">>>> TextReport <<<<");
             Console.WriteLine();
 
-            Console.WriteLine(report.TextReport());
+            var docxOutputFile = @"C:\Users\dhfra\Documents\GitHub\DocConverter\TestFiles\output file.docx";
+            report.DocXWrite(docxOutputFile);
+
+            Console.WriteLine(report.TextReport());    ///// @@@@
         }
     }
 }
