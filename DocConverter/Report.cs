@@ -73,9 +73,16 @@ namespace DocConverter
                 {
                     if (line.Contains("\t"))
                     {
-                        var drugEffect = new DrugEffect(line);
-                        DrugEffects.Add(drugEffect);
-                        previousDrugEffect = drugEffect;
+                        var drugEntryItems = line.Split('\t');
+                        if (drugEntryItems.Count() == 4)
+                        {
+                            var drugEffect = new DrugEffect(drugEntryItems);
+                            DrugEffects.Add(drugEffect);
+                            previousDrugEffect = drugEffect;
+                        } else
+                        {
+                            previousDrugEffect = null;
+                        }
                     }
                     else
                     {
@@ -104,9 +111,17 @@ namespace DocConverter
                 {
                     if (line.Contains("\t"))
                     {
-                        var multiDrugEffect = new MultiDrugEffect(line);
-                        MultiDrugEffects.Add(multiDrugEffect);
-                        previousDrugEffect = multiDrugEffect;
+                        var drugEntryItems = line.Split('\t');
+                        if (drugEntryItems.Count() == 6)
+                        {
+                            var multiDrugEffect = new MultiDrugEffect(drugEntryItems);
+                            MultiDrugEffects.Add(multiDrugEffect);
+                            previousDrugEffect = multiDrugEffect;
+                        }
+                        else
+                        {
+                            previousDrugEffect = null;
+                        }
                     }
                     else
                     {
@@ -231,7 +246,7 @@ namespace DocConverter
         #endregion Parse
 
         #region DocX Writer
-        internal void DocXWrite(string docxOutputFile)
+        public void DocXWrite(string docxOutputFile)
         {
             // Create a new document.
             using (var document = DocX.Create(docxOutputFile))

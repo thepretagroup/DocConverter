@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocConverter", "DocConverte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocConverter.test", "DocConverter.test\DocConverter.test.csproj", "{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocConverterUi", "DocConverterUi\DocConverterUi.csproj", "{740231AB-327C-43AC-85F4-6D96FE47090C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740231AB-327C-43AC-85F4-6D96FE47090C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740231AB-327C-43AC-85F4-6D96FE47090C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740231AB-327C-43AC-85F4-6D96FE47090C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740231AB-327C-43AC-85F4-6D96FE47090C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

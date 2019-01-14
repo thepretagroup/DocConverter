@@ -9,14 +9,14 @@
 
         protected DrugEffect() {}
 
-        public DrugEffect(string drugEntryLine)
+        public DrugEffect(string[] drugEntryItems)
         {
-            var items = drugEntryLine.Split('\t');
+            //var drugEntryItems = drugEntryLine.Split('\t');
 
-            Drug = items[0].Trim();
-            IC50 = items[1];
-            Units = items[2];
-            Interpretation = items[3];
+            Drug = drugEntryItems[0].Trim();
+            IC50 = drugEntryItems[1];
+            Units = drugEntryItems[2];
+            Interpretation = drugEntryItems[3];
         }
 
         public void ExtendDrugName(string line)
