@@ -29,6 +29,7 @@ namespace DocConverterUi
         public MainWindow()
         {
             InitializeComponent();
+
             SetupDefaults();
         }
 
