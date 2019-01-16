@@ -5,14 +5,11 @@
         public string Ratio { get; protected set; }
         public string Synergy { get; protected set; }
 
-        public MultiDrugEffect(string[] drugEntryItems)
+        public MultiDrugEffect(string drug, string ratio, string ic50, string units, string interpretation, string synergy) :
+                    base(drug, ic50, units, interpretation)
         {
-            Drug = drugEntryItems[0].Trim();
-            Ratio = drugEntryItems[1];
-            IC50 = drugEntryItems[2];
-            Units = drugEntryItems[3];
-            Interpretation = drugEntryItems[4];
-            Synergy = drugEntryItems[5];
+            Ratio = ratio;
+            Synergy = synergy;
         }
 
         public override string TextReportLine()

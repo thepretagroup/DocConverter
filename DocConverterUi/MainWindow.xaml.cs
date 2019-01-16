@@ -69,9 +69,9 @@ namespace DocConverterUi
             var openFileDlg = new Microsoft.Win32.SaveFileDialog
             {
                 DefaultExt = ".docx",
-                FileName = OutputFileDirectory + DefaultOutputFilename + ".docx",
+                FileName = OutputFileDirectory + @"\" + DefaultOutputFilename + ".docx",
                 InitialDirectory = OutputFileDirectory,
-                //Multiselect = true,
+                //Multiselect = true, // @@@ TODO:  Is this needed????
                 Title = "Input File"
             };
 

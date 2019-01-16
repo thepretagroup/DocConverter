@@ -76,7 +76,7 @@ namespace DocConverter
                         var drugEntryItems = line.Split('\t');
                         if (drugEntryItems.Count() == 4)
                         {
-                            var drugEffect = new DrugEffect(drugEntryItems);
+                            var drugEffect = new DrugEffect(drugEntryItems[0], drugEntryItems[1], drugEntryItems[2], drugEntryItems[3]);
                             DrugEffects.Add(drugEffect);
                             previousDrugEffect = drugEffect;
                         } else
@@ -114,7 +114,9 @@ namespace DocConverter
                         var drugEntryItems = line.Split('\t');
                         if (drugEntryItems.Count() == 6)
                         {
-                            var multiDrugEffect = new MultiDrugEffect(drugEntryItems);
+                            var multiDrugEffect = new MultiDrugEffect(
+                                drugEntryItems[0], drugEntryItems[1], drugEntryItems[2], drugEntryItems[3], drugEntryItems[4], drugEntryItems[5]);
+
                             MultiDrugEffects.Add(multiDrugEffect);
                             previousDrugEffect = multiDrugEffect;
                         }
@@ -316,20 +318,20 @@ namespace DocConverter
         {
             document.InsertParagraph(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
 
-            foreach (var drugEffect in drugEffects)
+            foreach (var drugEffect in drugEffects.OrderBy(de => de.Drug))
             {
                 var paragraph = document.InsertParagraph(drugEffect.Drug)
                     .FontSize(10d)
                     .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 300)
-                    .InsertTabStopPosition(Alignment.left, 375);
+                    .InsertTabStopPosition(Alignment.left, 315)
+                    .InsertTabStopPosition(Alignment.left, 390);
                 paragraph.Append("\t" + drugEffect.Interpretation);
                 paragraph.Append("\t");
                 if(drugEffect is MultiDrugEffect)
                 {
                     paragraph.Append((drugEffect as MultiDrugEffect).Synergy);
                 }
-                paragraph.Append("\tHigher").Italic();
+                paragraph.Append("\t" + drugEffect.ExVivoInterpretation);
             }
         }
 
@@ -340,23 +342,23 @@ namespace DocConverter
             document.InsertParagraph("\tEx Vivo\tEx Vivo\tEx Vivo")
                 .FontSize(10d).Bold()
                     .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 300)
-                    .InsertTabStopPosition(Alignment.left, 375);
+                    .InsertTabStopPosition(Alignment.left, 315)
+                    .InsertTabStopPosition(Alignment.left, 390);
             document.InsertParagraph("\tActivity\tSynergy\tInterpretation")
                 .FontSize(10d).Bold()
                     .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 300)
-                    .InsertTabStopPosition(Alignment.left, 375);
+                    .InsertTabStopPosition(Alignment.left, 315)
+                    .InsertTabStopPosition(Alignment.left, 390);
             document.InsertParagraph("Drug\t\t\t")
                 .Font("Times Roman New").FontSize(12).Bold()
                     .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 300)
-                    .InsertTabStopPosition(Alignment.left, 375)
+                    .InsertTabStopPosition(Alignment.left, 315)
+                    .InsertTabStopPosition(Alignment.left, 390)
                 .Append("Response Expectation").Font("Times Roman New");
             document.InsertParagraph("\tCompared with Database")
                 .Font("Times Roman New").FontSize(10d)
-                .InsertTabStopPosition(Alignment.left, 375);
-            document.InsertParagraph("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
+                .InsertTabStopPosition(Alignment.left, 390);
+            document.InsertParagraph("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
                 .FontSize(10d).Bold();
         }
 
@@ -365,7 +367,7 @@ namespace DocConverter
             document.InsertParagraph().SpacingAfter(30);
 
             WriteSpecLine(document, "Patient:", Patient, "Assay Date:", AssayDate);
-            WriteSpecLine(document, "Dx:", Dx, "Assay Quality:", AssayQuality);
+            WriteSpecLine(document, "Dx:", Dx, "Assay Quality:", "" /* AssayQuality */);
             WriteSpecLine(document, "Prior Rx:", PriorRx, "Report Date:", ReportDate);
             WriteSpecLine(document, "Physician:", Physician, "Specimen Number:", SpecimenNumber);
         }

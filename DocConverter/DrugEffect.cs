@@ -1,22 +1,46 @@
-﻿namespace DocConverter
+﻿using System.Collections.Generic;
+
+namespace DocConverter
 {
     public class DrugEffect
     {
+        private readonly Dictionary<string, string> ActivityMap = new Dictionary<string, string>
+        {
+            { "Resistant","Lower" },
+            { "Inactive","Lower" },
+            { "Sensitive", "Higher" },
+            { "Intermediate", "Average" },
+            { "Moderately Active", "Average" },
+            { "Active", "** Mapping ???" },  // TODO:  What is this mapped to?
+        };
+
         public string Drug { get; protected set; }
         public string IC50 { get; protected set; }
         public string Units { get; protected set; }
-        public string Interpretation { get; protected set; }
+        public string Interpretation { get; internal set; }
+        public string ExVivoInterpretation
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Interpretation) || !ActivityMap.ContainsKey(Interpretation))
+                {
+                    return "?";   // TODO:  What is the correct value? should this be String.Empty ?
+                }
 
-        protected DrugEffect() {}
+                return ActivityMap[Interpretation];
+            }
+        }
 
-        public DrugEffect(string[] drugEntryItems)
+        protected DrugEffect() { }
+
+        public DrugEffect(string drug, string ic50, string units, string interpretation)
         {
             //var drugEntryItems = drugEntryLine.Split('\t');
 
-            Drug = drugEntryItems[0].Trim();
-            IC50 = drugEntryItems[1];
-            Units = drugEntryItems[2];
-            Interpretation = drugEntryItems[3];
+            Drug = drug.Trim();
+            IC50 = ic50;
+            Units = units;
+            Interpretation = interpretation;
         }
 
         public void ExtendDrugName(string line)
