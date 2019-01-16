@@ -98,7 +98,9 @@ namespace DocConverterUi
             report.Parse(paragraphs);
 
             var docxOutputFile = OuputFileTextBox.Text;
-            report.DocXWrite(docxOutputFile);
+            ////////report.DocXWrite(docxOutputFile);
+            var reportWriter = new ReportWriter(report);
+            reportWriter.CreateDocX(docxOutputFile);
 
             ViewEditButton.IsEnabled = true;
 

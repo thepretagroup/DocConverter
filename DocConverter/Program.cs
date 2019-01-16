@@ -18,7 +18,10 @@ namespace DocConverter
             Console.WriteLine();
 
             var docxOutputFile = @"C:\Users\dhfra\Documents\GitHub\DocConverter\TestFiles\output file.docx";
-            report.DocXWrite(docxOutputFile);
+            //report.DocXWrite(docxOutputFile);
+
+            var reportWriter = new ReportWriter(report);
+            reportWriter.CreateDocX(docxOutputFile);
 
             Console.WriteLine(report.TextReport());    ///// @@@@
         }
