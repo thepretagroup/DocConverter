@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Xceed.Words.NET;
 using System.Linq;
+using Xceed.Words.NET;
 
 namespace DocConverter
 {
@@ -24,22 +23,24 @@ namespace DocConverter
                 document.MarginLeft = 36;
                 document.MarginRight = 36;
 
-
                 // Add a title
                 document.InsertParagraph(Report.Header).Font("Arial").FontSize(18).Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
 
                 WriteHeaderInfo(document);
+                document.InsertParagraph().SpacingAfter(20);
 
-                WriteAnalysisHeader(document);
+                var table = CreateAnalysisTable(document);
 
                 if (Report.DrugEffects.Count > 0)
                 {
-                    WriteDrugEffects(document, Report.SingleDoseEffectHeader, Report.DrugEffects);
+                    WriteDrugEffects(table, Report.SingleDoseEffectHeader, Report.DrugEffects);
                 }
                 if (Report.MultiDrugEffects.Count > 0)
                 {
-                    WriteDrugEffects(document, Report.MultiDoseEffectHeader, Report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
+                    WriteDrugEffects(table, Report.MultiDoseEffectHeader, Report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
                 }
+
+                document.InsertTable(table);
 
                 WriteInterpretation(document);
 
@@ -82,52 +83,49 @@ namespace DocConverter
             }
         }
 
-        private void WriteDrugEffects(DocX document, string header, List<DrugEffect> drugEffects)
+        private void WriteDrugEffects(Table table, string header, List<DrugEffect> drugEffects)
         {
-            document.InsertParagraph(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
+            var row = table.InsertRow();
+            row.MergeCells(0, 3);
+            row.Cells[0].Paragraphs[0].Append(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
 
             foreach (var drugEffect in drugEffects.OrderBy(de => de.Drug))
             {
-                var paragraph = document.InsertParagraph(drugEffect.Drug)
-                    .FontSize(10d)
-                    .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 315)
-                    .InsertTabStopPosition(Alignment.left, 390);
-                paragraph.Append("\t" + drugEffect.Interpretation);
-                paragraph.Append("\t");
+                row = table.InsertRow();
+                row.Cells[0].Paragraphs[0].Append(drugEffect.Drug).FontSize(10d);
+                row.Cells[1].Paragraphs[0].Append(drugEffect.Interpretation).FontSize(10d);
                 if (drugEffect is MultiDrugEffect)
                 {
-                    paragraph.Append((drugEffect as MultiDrugEffect).Synergy);
+                    row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).Synergy).FontSize(10d);
                 }
-                paragraph.Append("\t" + drugEffect.ExVivoInterpretation);
+                row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivoInterpretation).FontSize(10d);
             }
         }
 
-        private void WriteAnalysisHeader(DocX document)
-        {
-            document.InsertParagraph().SpacingAfter(20);
+        private Table CreateAnalysisTable(DocX document) {
+            var table = document.AddTable(4, 4);
 
-            document.InsertParagraph("\tEx Vivo\tEx Vivo\tEx Vivo")
-                .FontSize(10d).Bold()
-                    .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 315)
-                    .InsertTabStopPosition(Alignment.left, 390);
-            document.InsertParagraph("\tActivity\tSynergy\tInterpretation")
-                .FontSize(10d).Bold()
-                    .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 315)
-                    .InsertTabStopPosition(Alignment.left, 390);
-            document.InsertParagraph("Drug\t\t\t")
-                .Font("Times Roman New").FontSize(12).Bold()
-                    .InsertTabStopPosition(Alignment.left, 225)
-                    .InsertTabStopPosition(Alignment.left, 315)
-                    .InsertTabStopPosition(Alignment.left, 390)
-                .Append("Response Expectation").Font("Times Roman New");
-            document.InsertParagraph("\tCompared with Database")
-                .Font("Times Roman New").FontSize(10d)
-                .InsertTabStopPosition(Alignment.left, 390);
-            document.InsertParagraph("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
-                .FontSize(10d).Bold();
+            table.Design = TableDesign.None;
+            table.AutoFit = AutoFit.ColumnWidth;
+            table.SetWidths(new[] { 225f, 90f, 75f, 120f });
+
+            table.Rows[0].Cells[1].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
+            table.Rows[0].Cells[2].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
+            table.Rows[0].Cells[3].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
+            table.Rows[1].Cells[1].Paragraphs[0].Append("Activity").FontSize(10d).Bold();
+            table.Rows[1].Cells[2].Paragraphs[0].Append("Synergy").FontSize(10d).Bold();
+            table.Rows[1].Cells[3].Paragraphs[0].Append("Interpretation").FontSize(10d).Bold();
+            table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").Font("Times Roman New").FontSize(12).Bold();
+            table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Times Roman New").FontSize(10d);
+            table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Times Roman New").FontSize(10d);
+
+            var border = new Border(BorderStyle.Tcbs_thick, BorderSize.six, 0, System.Drawing.Color.Black);
+            foreach (var cell in table.Rows[3].Cells)
+            {
+                cell.SetBorder(TableCellBorderType.Bottom, border);
+            }
+
+            return table;
         }
 
         private void WriteHeaderInfo(DocX document)
@@ -153,6 +151,5 @@ namespace DocConverter
                 .InsertTabStopPosition(Alignment.left, 400);
         }
         #endregion
-
     }
 }
