@@ -52,15 +52,14 @@ namespace DocConverterUi
 
             // Launch OpenFileDialog by calling ShowDialog method
             var result = openFileDlg.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
             if (result == true)
             {
                 var filename= openFileDlg.FileName;
                 InputFileTextBox.Text = filename;
                 InputFileDirectory = System.IO.Path.GetDirectoryName(filename);
                 DefaultOutputFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
+                ConvertButton.IsEnabled = false;
+                ViewEditButton.IsEnabled = false;
             }
         }
 
@@ -70,7 +69,8 @@ namespace DocConverterUi
             var openFileDlg = new Microsoft.Win32.SaveFileDialog
             {
                 DefaultExt = ".docx",
-                FileName = OutputFileDirectory + @"\" + DefaultOutputFilename + ".docx",
+                //FileName = OutputFileDirectory + DefaultOutputFilename + ".docx",
+                FileName = DefaultOutputFilename + ".docx",
                 InitialDirectory = OutputFileDirectory,
                 //Multiselect = true, // @@@ TODO:  Is this needed????
                 Title = "Input File"
@@ -85,8 +85,7 @@ namespace DocConverterUi
             {
                 OuputFileTextBox.Text = openFileDlg.FileName;
                 OutputFileDirectory = System.IO.Path.GetDirectoryName(openFileDlg.FileName);
-                //TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
-
+                ViewEditButton.IsEnabled = false;
                 ConvertButton.IsEnabled = true;
             }
         }
@@ -104,7 +103,6 @@ namespace DocConverterUi
             reportWriter.CreateDocX(docxOutputFile);
 
             ViewEditButton.IsEnabled = true;
-
         }
 
         private void ViewEditButton_Click(object sender, RoutedEventArgs e)
