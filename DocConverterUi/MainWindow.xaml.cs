@@ -45,17 +45,18 @@ namespace DocConverterUi
             {
                 DefaultExt = ".rtf",
                 InitialDirectory = InputFileDirectory,
-                //Multiselect = true,
+                Filter = "Rich Text Files|*.rtf",
+                Multiselect = true,
                 Title = "Input File"
             };
 
 
             // Launch OpenFileDialog by calling ShowDialog method
             var result = openFileDlg.ShowDialog();
-            if (result == true)
+            if (result == true && !string.IsNullOrEmpty(openFileDlg.FileName))
             {
-                var filename= openFileDlg.FileName;
-                InputFileTextBox.Text = filename;
+                var filename= openFileDlg.FileName; // First filename
+                InputFileTextBox.Text = string.Join(Environment.NewLine, openFileDlg.FileNames);
                 InputFileDirectory = System.IO.Path.GetDirectoryName(filename);
                 DefaultOutputFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
                 ConvertButton.IsEnabled = false;
@@ -72,7 +73,6 @@ namespace DocConverterUi
                 //FileName = OutputFileDirectory + DefaultOutputFilename + ".docx",
                 FileName = DefaultOutputFilename + ".docx",
                 InitialDirectory = OutputFileDirectory,
-                //Multiselect = true, // @@@ TODO:  Is this needed????
                 Title = "Input File"
             };
 
@@ -92,17 +92,25 @@ namespace DocConverterUi
 
         private void ConvertButton_Click(object sender, RoutedEventArgs e)
         {
-            var paragraphs = RtfReader.ReadParagraphs(InputFileTextBox.Text);
+            var reports = new List<Report>();
 
-            var report = new Report();
-            report.Parse(paragraphs);
+            foreach (var filename in 
+                    InputFileTextBox.Text.Split(new []{ Environment.NewLine }, StringSplitOptions.None)){
 
-            var docxOutputFile = OuputFileTextBox.Text;
-            ////////report.DocXWrite(docxOutputFile);
-            var reportWriter = new ReportWriter(report);
-            reportWriter.CreateDocX(docxOutputFile);
+                var paragraphs = RtfReader.ReadParagraphs(filename);
+                var report = new Report();
+                report.Parse(paragraphs);
+                reports.Add(report);
+            }
 
-            ViewEditButton.IsEnabled = true;
+            if (reports.Count() > 0)
+            {
+                var docxOutputFile = OuputFileTextBox.Text;
+                var reportWriter = new ReportWriter(reports);
+                reportWriter.CreateDocX(docxOutputFile);
+
+                ViewEditButton.IsEnabled = true;
+            }
         }
 
         private void ViewEditButton_Click(object sender, RoutedEventArgs e)

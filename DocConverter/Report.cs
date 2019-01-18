@@ -111,7 +111,12 @@ namespace DocConverter
                 {
                     if (line.Contains("\t"))
                     {
-                        var drugEntryItems = line.Split('\t');
+                        var drugEntryItems = line.Split('\t').ToList();
+                        if (drugEntryItems.Count() == 5)  // Ratio is missing
+                        {
+                            drugEntryItems.Insert(1, string.Empty);
+                        }
+
                         if (drugEntryItems.Count() == 6)
                         {
                             var multiDrugEffect = new MultiDrugEffect(

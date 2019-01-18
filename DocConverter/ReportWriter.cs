@@ -7,11 +7,11 @@ namespace DocConverter
 {
     public class ReportWriter
     {
-        private Report Report { get; set; }
+        private IList<Report> Reports { get; set; }
 
-        public ReportWriter(Report report)
+        public ReportWriter(IList<Report> reports)
         {
-            Report = report;
+            Reports = reports;
         }
 
         #region DocX Writer
@@ -26,27 +26,37 @@ namespace DocConverter
                 // Add a title
                 document.InsertParagraph(Report.Header).Font("Arial").FontSize(18).Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
 
-                WriteHeaderInfo(document);
+                WriteHeaderInfo(document, Reports[0]);
                 document.InsertParagraph().SpacingAfter(20);
 
                 var table = CreateAnalysisTable(document);
 
-                if (Report.DrugEffects.Count > 0)
+                var firstReport = true;
+                foreach (var report in Reports)
                 {
-                    WriteDrugEffects(table, Report.SingleDoseEffectHeader, Report.DrugEffects);
+                    if (!firstReport)
+                    {
+                        var row = table.InsertRow();
+                        row.MergeCells(0, 3);
+                        row.Cells[0].Paragraphs[0].Append("ExVivo Tar,Get Analysis??").Font("Arial").FontSize(14).Bold().UnderlineColor(System.Drawing.Color.Black);
+                    }
+                    if (report.DrugEffects.Count > 0)
+                    {
+                        WriteDrugEffects(table, Report.SingleDoseEffectHeader, report.DrugEffects);
+                    }
+                    if (report.MultiDrugEffects.Count > 0)
+                    {
+                        WriteDrugEffects(table, Report.MultiDoseEffectHeader, report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
+                    }
+                    firstReport = false;
                 }
-                if (Report.MultiDrugEffects.Count > 0)
-                {
-                    WriteDrugEffects(table, Report.MultiDoseEffectHeader, Report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
-                }
-
                 document.InsertTable(table);
 
-                WriteInterpretation(document);
+                WriteInterpretation(document, Reports[0]);
 
                 WriteExVivoBest(document);
 
-                WriteSignature(document);
+                WriteSignature(document, Reports[0]);
 
                 // Save this document to disk.
                 document.Save();
@@ -62,22 +72,22 @@ namespace DocConverter
             document.InsertParagraph(exVivoMsg).Font("Arial").FontSize(12).Bold().Alignment = Alignment.left;
         }
 
-        private void WriteInterpretation(DocX document)
+        private void WriteInterpretation(DocX document, Report report)
         {
             document.InsertParagraph().SpacingAfter(24);
 
             document.InsertParagraph("DATA ANALYSIS:").Font("Arial").FontSize(14).Bold().Alignment = Alignment.left;
 
-            foreach (var interpretationLine in Report.Interpretation)
+            foreach (var interpretationLine in report.Interpretation)
             {
                 document.InsertParagraph(interpretationLine).Font("Arial").FontSize(10);
             }
         }
 
-        private void WriteSignature(DocX document)
+        private void WriteSignature(DocX document, Report report)
         {
             document.InsertParagraph().SpacingAfter(24);
-            foreach (var signatureLine in Report.Signature)
+            foreach (var signatureLine in report.Signature)
             {
                 document.InsertParagraph(signatureLine).Font("Arial").FontSize(12);
             }
@@ -128,14 +138,14 @@ namespace DocConverter
             return table;
         }
 
-        private void WriteHeaderInfo(DocX document)
+        private void WriteHeaderInfo(DocX document, Report report)
         {
             document.InsertParagraph().SpacingAfter(30);
 
-            WriteSpecLine(document, "Patient:", Report.Patient, "Assay Date:", Report.AssayDate);
-            WriteSpecLine(document, "Dx:", Report.Dx, "Assay Quality:", "" /* Report.AssayQuality */);
-            WriteSpecLine(document, "Prior Rx:", Report.PriorRx, "Report Date:", Report.ReportDate);
-            WriteSpecLine(document, "Physician:", Report.Physician, "Specimen Number:", Report.SpecimenNumber);
+            WriteSpecLine(document, "Patient:", report.Patient, "Assay Date:", report.AssayDate);
+            WriteSpecLine(document, "Dx:", report.Dx, "Assay Quality:", "" /* report.AssayQuality */);
+            WriteSpecLine(document, "Prior Rx:", report.PriorRx, "Report Date:", report.ReportDate);
+            WriteSpecLine(document, "Physician:", report.Physician, "Specimen Number:", report.SpecimenNumber);
         }
 
         private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName, string rightValue)
