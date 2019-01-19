@@ -23,7 +23,7 @@ namespace DocConverter.test
         [TestCase("Sensitive", "Higher")]
         [TestCase("Intermediate", "Average")]
         [TestCase("Moderately Active", "Average")]
-        [TestCase("Active", "?????")]
+        [TestCase("Active", "Higher")]
         [TestCase("Non Existent Value", "?")] 
         [TestCase("", "?")]
         [TestCase(null, "?")]
@@ -31,7 +31,7 @@ namespace DocConverter.test
         {
             var de = new DrugEffect("tylenol", "123", "ug/ml", interprectation);
 
-            Assert.AreEqual(ExpectedExVivoInterpretation, de.ExVivoInterpretation);
+            Assert.AreEqual(ExpectedExVivoInterpretation, de.ExVivo.Interpretation);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace DocConverter.test
         {
             var mde = new MultiDrugEffect("tylenol", "1:2", "123", "ug/ml", interprectation, "N/A");
 
-            Assert.AreEqual(ExpectedExVivoInterpretation, mde.ExVivoInterpretation);
+            Assert.AreEqual(ExpectedExVivoInterpretation, mde.ExVivo.Interpretation);
         }
 
 

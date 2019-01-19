@@ -1,19 +1,8 @@
 ﻿using DocConverter;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DocConverterUi
 {
@@ -29,13 +18,6 @@ namespace DocConverterUi
         public MainWindow()
         {
             InitializeComponent();
-
-            SetupDefaults();
-        }
-
-        private void SetupDefaults()
-        {
-            //throw new NotImplementedException();
         }
 
         private void InputFileButton_Click(object sender, RoutedEventArgs e)
@@ -46,10 +28,8 @@ namespace DocConverterUi
                 DefaultExt = ".rtf",
                 InitialDirectory = InputFileDirectory,
                 Filter = "Rich Text Files|*.rtf",
-                Multiselect = true,
                 Title = "Input File"
             };
-
 
             // Launch OpenFileDialog by calling ShowDialog method
             var result = openFileDlg.ShowDialog();
@@ -70,17 +50,12 @@ namespace DocConverterUi
             var openFileDlg = new Microsoft.Win32.SaveFileDialog
             {
                 DefaultExt = ".docx",
-                //FileName = OutputFileDirectory + DefaultOutputFilename + ".docx",
                 FileName = DefaultOutputFilename + ".docx",
                 InitialDirectory = OutputFileDirectory,
                 Title = "Input File"
             };
 
-
-            // Launch OpenFileDialog by calling ShowDialog method
             var result = openFileDlg.ShowDialog();
-            // Get the selected file name and display in a TextBox.
-            // Load content of file in a TextBlock
             if (result == true)
             {
                 OuputFileTextBox.Text = openFileDlg.FileName;

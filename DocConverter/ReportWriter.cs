@@ -99,17 +99,34 @@ namespace DocConverter
             row.MergeCells(0, 3);
             row.Cells[0].Paragraphs[0].Append(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
 
-            foreach (var drugEffect in drugEffects.OrderBy(de => de.Drug))
+            foreach (var drugEffect in drugEffects
+                .FindAll(de =>  !de.Interpretation.Contains("Active"))
+                .OrderBy(de => de.ExVivo.Rank)
+                .ThenBy(de => de.Drug))
             {
                 row = table.InsertRow();
                 row.Cells[0].Paragraphs[0].Append(drugEffect.Drug).FontSize(10d);
-                row.Cells[1].Paragraphs[0].Append(drugEffect.Interpretation).FontSize(10d);
+                var exVivoActivity = row.Cells[1].Paragraphs[0].Append(drugEffect.ExVivo.Activity).FontSize(10d);
+                if (drugEffect.ExVivo.Rank == 1)
+                {
+                    BoldItalicize(exVivoActivity);
+                }
                 if (drugEffect is MultiDrugEffect)
                 {
                     row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).Synergy).FontSize(10d);
                 }
-                row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivoInterpretation).FontSize(10d);
+                var exVivoInterpretation = row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivo.Interpretation).FontSize(10d);
+                if (drugEffect.ExVivo.Rank == 1)
+                {
+                    BoldItalicize(exVivoInterpretation);
+                }
+
             }
+        }
+
+        private void BoldItalicize(Paragraph paragraph)
+        {
+            paragraph.Bold().Italic();
         }
 
         private Table CreateAnalysisTable(DocX document) {
@@ -125,7 +142,7 @@ namespace DocConverter
             table.Rows[1].Cells[1].Paragraphs[0].Append("Activity").FontSize(10d).Bold();
             table.Rows[1].Cells[2].Paragraphs[0].Append("Synergy").FontSize(10d).Bold();
             table.Rows[1].Cells[3].Paragraphs[0].Append("Interpretation").FontSize(10d).Bold();
-            table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").Font("Times Roman New").FontSize(12).Bold();
+            table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").FontSize(10).Bold();
             table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Times Roman New").FontSize(10d);
             table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Times Roman New").FontSize(10d);
 

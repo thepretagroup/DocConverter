@@ -4,29 +4,47 @@ namespace DocConverter
 {
     public class DrugEffect
     {
-        private readonly Dictionary<string, string> ActivityMap = new Dictionary<string, string>
+        public class ExVivoFactor
         {
-            { "Resistant","Lower" },
-            { "Inactive","Lower" },
-            { "Sensitive", "Higher" },
-            { "Intermediate", "Average" },
-            { "Moderately Active", "Average" },
-            { "Active", "** Mapping ???" },  // TODO:  What is this mapped to?
+            public string Activity { get; set; }
+            public string Interpretation { get; set; }
+            public int Rank { get; set; }
+
+            public ExVivoFactor(string activity, string interpretation, int rank)
+            {
+                Activity = activity;
+                Interpretation = interpretation;
+                Rank = rank;
+            }
+        }
+
+        protected static readonly ExVivoFactor LowerExVivo = new ExVivoFactor("Resistant", "Lower", 3);
+        protected static readonly ExVivoFactor HigherExVivo = new ExVivoFactor("Sensitive", "Higher", 1);
+        protected static readonly ExVivoFactor IntermediateExVivo = new ExVivoFactor("Intermediate", "Average", 2);
+        protected static readonly ExVivoFactor UnknownExVivo = new ExVivoFactor("?", "?", 4);
+
+        protected readonly Dictionary<string, ExVivoFactor> ActivityMap = new Dictionary<string, ExVivoFactor>
+        {
+            { "Resistant", LowerExVivo},
+            { "Inactive",LowerExVivo },
+            { "Sensitive", HigherExVivo },
+            { "Intermediate", IntermediateExVivo },
+            { "Moderately Active", IntermediateExVivo },
+            { "Active", HigherExVivo },
         };
 
         public string Drug { get; protected set; }
         public string IC50 { get; protected set; }
         public string Units { get; protected set; }
         public string Interpretation { get; internal set; }
-        public string ExVivoInterpretation
+        public ExVivoFactor ExVivo
         {
             get
             {
                 if (string.IsNullOrEmpty(Interpretation) || !ActivityMap.ContainsKey(Interpretation))
                 {
-                    return "?";   // TODO:  What is the correct value? should this be String.Empty ?
+                    return UnknownExVivo;
                 }
-
                 return ActivityMap[Interpretation];
             }
         }
