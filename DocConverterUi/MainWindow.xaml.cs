@@ -93,5 +93,15 @@ namespace DocConverterUi
             // @@@@@ TODO:  First check if file exists
             System.Diagnostics.Process.Start(OuputFileTextBox.Text);
         }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(MessageBox.Show("Exit application?", "Exit?", 
+                MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                Application.Current.Shutdown();
+            }
+        }
     }
 }

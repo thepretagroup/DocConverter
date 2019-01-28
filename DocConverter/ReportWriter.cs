@@ -1,5 +1,8 @@
-﻿using System;
+﻿using DocConverter.Properties;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using Xceed.Words.NET;
 
@@ -22,9 +25,22 @@ namespace DocConverter
             {
                 document.MarginLeft = 36;
                 document.MarginRight = 36;
+                document.MarginTop = 36;
+
+                using (var imageStream = new MemoryStream())
+                {
+                    Resources.Logo_Nagourney_Cancer_Institute.Save(imageStream, ImageFormat.Jpeg);
+                    imageStream.Position = 0;
+                    var image = document.AddImage(imageStream);
+                    var picture = image.CreatePicture(
+                        Resources.Logo_Nagourney_Cancer_Institute.Height / 4,
+                        Resources.Logo_Nagourney_Cancer_Institute.Width / 4);
+                    //picture.WrappingStyle = PictureWrapText.WrapBehindText;  // Not available w/ Free version
+                    document.InsertParagraph().AppendPicture(picture).Alignment = Alignment.right;
+                }
 
                 // Add a title
-                document.InsertParagraph(Report.Header).Font("Arial").FontSize(18).Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
+                document.InsertParagraph(Resources.ReportHeader).Font("Arial").FontSize(18).Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
 
                 WriteHeaderInfo(document, Reports[0]);
                 document.InsertParagraph().SpacingAfter(20);
@@ -42,11 +58,11 @@ namespace DocConverter
                     }
                     if (report.DrugEffects.Count > 0)
                     {
-                        WriteDrugEffects(table, Report.SingleDoseEffectHeader, report.DrugEffects);
+                        WriteDrugEffects(table, Resources.SingleDoseEffectHeader, report.DrugEffects);
                     }
                     if (report.MultiDrugEffects.Count > 0)
                     {
-                        WriteDrugEffects(table, Report.MultiDoseEffectHeader, report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
+                        WriteDrugEffects(table, Resources.MultiDoseEffectHeader, report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
                     }
                     firstReport = false;
                 }

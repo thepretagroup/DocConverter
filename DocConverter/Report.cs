@@ -1,21 +1,13 @@
-﻿using System;
+﻿using DocConverter.Properties;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Xceed.Words.NET;
 using System.Linq;
+using System.Text;
 
 namespace DocConverter
 {
     public class Report
     {
-        #region Sections
-        public const string Header = "EVA-PCD FUNCTIONAL PROFILE";
-        public const string SingleDoseEffectHeader = "SINGLE DRUG DOSE EFFECT ANALYSIS";
-        public const string MultiDoseEffectHeader = "MULTIPLE DRUG DOSE EFFECT ANALYSIS";
-        public const string InterpretationHeader = "INTERPRETATION:";
-        public const string ExVivoHeader = "Ex Vivo best regimen (EVBR®) would be";
-        #endregion Sections
-
         #region Members
         private string _patient;
         private string _dx;
@@ -61,7 +53,7 @@ namespace DocConverter
 
         private void ParseSingleDoseEffect(IEnumerator<string> currentParagraph)
         {
-            if (currentParagraph.Current.Trim().Equals(SingleDoseEffectHeader))
+            if (currentParagraph.Current.Trim().Equals(Resources.SingleDoseEffectHeader))
             {
 
                 currentParagraph.MoveNext(); // Eat the header
@@ -69,7 +61,7 @@ namespace DocConverter
                 var line = currentParagraph.Current.Trim();
                 DrugEffect previousDrugEffect = null;
 
-                while (!line.Equals(MultiDoseEffectHeader) && !line.Equals(InterpretationHeader))
+                while (!line.Equals(Resources.MultiDoseEffectHeader) && !line.Equals(Resources.InterpretationHeader))
                 {
                     if (line.Contains("\t"))
                     {
@@ -100,14 +92,14 @@ namespace DocConverter
         {
             var line = currentParagraph.Current.Trim();
 
-            if (line.Equals(MultiDoseEffectHeader))
+            if (line.Equals(Resources.MultiDoseEffectHeader))
             {
                 DrugEffect previousDrugEffect = null;
                 currentParagraph.MoveNext(); // Eat the header
                 currentParagraph.MoveNext();
                 line = currentParagraph.Current.Trim();
 
-                while (!line.Equals(InterpretationHeader))
+                while (!line.Equals(Resources.InterpretationHeader))
                 {
                     if (line.Contains("\t"))
                     {
@@ -147,7 +139,7 @@ namespace DocConverter
             string line;
             currentParagraph.MoveNext();
             line = currentParagraph.Current.Trim();
-            while (!line.Equals(ExVivoHeader))
+            while (!line.Equals(Resources.ExVivoHeader))
             {
                 Interpretation.Add(line);
                 currentParagraph.MoveNext();
@@ -188,7 +180,7 @@ namespace DocConverter
         {
             currentParagraph.MoveNext();
 
-            if (!currentParagraph.Current.Trim().Equals(Header))
+            if (!currentParagraph.Current.Trim().Equals(Resources.ReportHeader))
             {
                 Console.WriteLine("### !!!! Wrong Header: " + currentParagraph.Current);
             }
@@ -214,7 +206,7 @@ namespace DocConverter
 
             if (DrugEffects.Count > 0)
             {
-                report.AppendLine("###" + SingleDoseEffectHeader);
+                report.AppendLine("###" + Resources.SingleDoseEffectHeader);
                 foreach (var drugEffect in DrugEffects)
                 {
                     report.AppendLine(drugEffect.TextReportLine());
@@ -223,14 +215,14 @@ namespace DocConverter
 
             if (MultiDrugEffects.Count > 0)
             {
-                report.AppendLine("###" + MultiDoseEffectHeader);
+                report.AppendLine("###" + Resources.MultiDoseEffectHeader);
                 foreach (var drugEffect in MultiDrugEffects)
                 {
                     report.AppendLine(drugEffect.TextReportLine());
                 }
             }
 
-            report.AppendLine("###" + ExVivoHeader);
+            report.AppendLine("###" + Resources.ExVivoHeader);
             foreach (var line in Interpretation)
             {
                 report.AppendLine(line);
