@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("DocConverterUi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("The Preta Group")]
 [assembly: AssemblyProduct("DocConverterUi")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]

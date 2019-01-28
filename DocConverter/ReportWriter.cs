@@ -81,11 +81,9 @@ namespace DocConverter
 
         private void WriteExVivoBest(DocX document)
         {
-            var exVivoMsg = "Ex Vivo best regimen (EVBR®) would be Irinotecan +/ -Cisplatin.";
-
             document.InsertParagraph().SpacingAfter(24);
 
-            document.InsertParagraph(exVivoMsg).Font("Arial").FontSize(12).Bold().Alignment = Alignment.left;
+            document.InsertParagraph(Resources.ExVivoHeader).Font("Arial").FontSize(12).Bold().Alignment = Alignment.left;
         }
 
         private void WriteInterpretation(DocX document, Report report)

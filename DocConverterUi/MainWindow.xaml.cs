@@ -76,6 +76,8 @@ namespace DocConverterUi
                 InputFileTextBox.Text = string.Join(Environment.NewLine, openFileDlg.FileNames);
                 InputFileDirectory = System.IO.Path.GetDirectoryName(filename);
                 DefaultOutputFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+                OuputFileTextBox.Text = string.Empty;
                 ConvertButton.IsEnabled = false;
                 ViewEditButton.IsEnabled = false;
             }
@@ -122,6 +124,7 @@ namespace DocConverterUi
                 var reportWriter = new ReportWriter(reports);
                 reportWriter.CreateDocX(docxOutputFile);
 
+                ConvertButton.IsEnabled = false;
                 ViewEditButton.IsEnabled = true;
             }
         }
