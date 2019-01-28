@@ -1,4 +1,5 @@
 ﻿using DocConverter;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,49 @@ namespace DocConverterUi
     /// </summary>
     public partial class MainWindow : Window
     {
-        // TODO: Save in registry
-        private string InputFileDirectory = @"C:\Users\dhfra\Documents\GitHub\DocConverter\TestFiles\";
-        private string OutputFileDirectory = @"C:\Users\dhfra\Documents\GitHub\DocConverter\TestFiles\";
         private string DefaultOutputFilename = "";
+
+        private string InputFileDirectory
+        {
+            get => ReadFromRegistry(@"SOFTWARE\Preta", "InputFileDirectory", 
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            set => WriteToRegistry(@"SOFTWARE\Preta", "InputFileDirectory", value);
+        }
+        private string OutputFileDirectory {
+            get => ReadFromRegistry(@"SOFTWARE\Preta", "OutputFileDirectory",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            set => WriteToRegistry(@"SOFTWARE\Preta", "OutputFileDirectory", value);
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private string ReadFromRegistry(string subKey, string item, string defaultValue = "")
+        {
+            // open the subkey  
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(subKey);
+
+            // if it does exist, retrieve the stored values  
+            if (key == null)
+            {
+                return defaultValue;
+            }
+            else
+            {
+                var value = key.GetValue(item) as string ?? defaultValue;
+                key.Close();
+                return value;
+            }
+        }
+
+        private void WriteToRegistry(string subKey, string item, string value)
+        {
+            // create the subkey  
+            RegistryKey key = Registry.CurrentUser.CreateSubKey(subKey);
+            key.SetValue(item, value);
+            key.Close();
         }
 
         private void InputFileButton_Click(object sender, RoutedEventArgs e)
@@ -35,7 +72,7 @@ namespace DocConverterUi
             var result = openFileDlg.ShowDialog();
             if (result == true && !string.IsNullOrEmpty(openFileDlg.FileName))
             {
-                var filename= openFileDlg.FileName; // First filename
+                var filename = openFileDlg.FileName; // First filename
                 InputFileTextBox.Text = string.Join(Environment.NewLine, openFileDlg.FileNames);
                 InputFileDirectory = System.IO.Path.GetDirectoryName(filename);
                 DefaultOutputFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
@@ -69,8 +106,9 @@ namespace DocConverterUi
         {
             var reports = new List<Report>();
 
-            foreach (var filename in 
-                    InputFileTextBox.Text.Split(new []{ Environment.NewLine }, StringSplitOptions.None)){
+            foreach (var filename in
+                    InputFileTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+            {
 
                 var paragraphs = RtfReader.ReadParagraphs(filename);
                 var report = new Report();
@@ -90,13 +128,20 @@ namespace DocConverterUi
 
         private void ViewEditButton_Click(object sender, RoutedEventArgs e)
         {
-            // @@@@@ TODO:  First check if file exists
-            System.Diagnostics.Process.Start(OuputFileTextBox.Text);
+            try
+            {
+                System.Diagnostics.Process.Start(OuputFileTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Unable to Open '{0}'{1}{2}", OuputFileTextBox.Text,Environment.NewLine, ex.Message),
+                    "Execution Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            if(MessageBox.Show("Exit application?", "Exit?", 
+            if (MessageBox.Show("Exit application?", "Exit",
                 MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
