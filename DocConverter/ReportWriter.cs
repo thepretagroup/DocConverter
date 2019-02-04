@@ -10,6 +10,11 @@ namespace DocConverter
 {
     public class ReportWriter
     {
+        private const float LetterPageWidth = 8.5f * 72;
+        private const float LetterPageHeight = 11f * 72;
+        private const float LeftRightMargin = 0.75f * 72;
+        private const float TopBottomMargin = 1.0f * 72;
+
         private IList<Report> Reports { get; set; }
 
         public ReportWriter(IList<Report> reports)
@@ -23,9 +28,11 @@ namespace DocConverter
             // Create a new document.
             using (var document = DocX.Create(docxOutputFile))
             {
-                document.MarginLeft = 36;
-                document.MarginRight = 36;
-                document.MarginTop = 36;
+                document.MarginLeft = LeftRightMargin;
+                document.MarginRight = LeftRightMargin;
+                document.MarginTop = TopBottomMargin;
+                document.PageWidth = LetterPageWidth;
+                document.PageHeight = LetterPageHeight;
 
                 using (var imageStream = new MemoryStream())
                 {
