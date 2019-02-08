@@ -12,8 +12,8 @@ namespace DocConverter
     {
         private const float LetterPageWidth = 8.5f * 72;
         private const float LetterPageHeight = 11f * 72;
-        private const float LeftRightMargin = 0.75f * 72;
-        private const float TopBottomMargin = 1.0f * 72;
+        private const float LeftRightMargin = 0.5f * 72;
+        private const float TopBottomMargin = 0.75f * 72;
 
         private IList<Report> Reports { get; set; }
 
