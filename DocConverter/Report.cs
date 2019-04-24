@@ -29,36 +29,40 @@ namespace DocConverter
 
         public List<DrugEffect> DrugEffects { get; private set; } = new List<DrugEffect>();
         public List<MultiDrugEffect> MultiDrugEffects { get; private set; } = new List<MultiDrugEffect>();
-        public IList<string> Interpretation { get; private set; } = new List<string>();
         public IList<string> Signature { get; private set; } = new List<string>();
         #endregion Members
 
         #region Parser
         public void Parse(IList<string> paragraphs)
         {
-            var currentParagraph = paragraphs.GetEnumerator();
+            var currentParagraph = 0;
+            try
+            {
+                VerifyHeader(paragraphs, ref currentParagraph);
 
-            VerifyHeader(currentParagraph);
+                ParseHeaderInfo(paragraphs, ref currentParagraph);
 
-            ParseHeaderInfo(currentParagraph);
+                ParseSingleDoseEffect(paragraphs, ref currentParagraph);
 
-            ParseSingleDoseEffect(currentParagraph);
+                ParseMultiDoseEffect(paragraphs, ref currentParagraph);
 
-            ParseMultiDoseEffect(currentParagraph);
+                ParseExVivo(paragraphs, ref currentParagraph);
 
-            ParseExVivo(currentParagraph);
-
-            ParseSignature(currentParagraph);
+                ParseSignature(paragraphs, ref currentParagraph);
+            }
+            catch (Exception ex)
+            {
+                throw new ParseException("Input file parsing error in paragraph #" + currentParagraph, ex);
+            }
         }
 
-        private void ParseSingleDoseEffect(IEnumerator<string> currentParagraph)
+        private void ParseSingleDoseEffect(IList<string> paragraphs, ref int currentParagraph)
         {
-            if (currentParagraph.Current.Trim().Equals(Resources.SingleDoseEffectHeader))
+            if (paragraphs[currentParagraph].Trim().Equals(Resources.SingleDoseEffectHeader))
             {
 
-                currentParagraph.MoveNext(); // Eat the header
-                currentParagraph.MoveNext();
-                var line = currentParagraph.Current.Trim();
+                currentParagraph++; // Eat the header
+                var line = paragraphs[++currentParagraph].Trim();
                 DrugEffect previousDrugEffect = null;
 
                 while (!line.Equals(Resources.MultiDoseEffectHeader) && !line.Equals(Resources.InterpretationHeader))
@@ -78,26 +82,22 @@ namespace DocConverter
                     }
                     else
                     {
-                        Console.WriteLine("*S* Before: {0}", previousDrugEffect.Drug);
                         previousDrugEffect.ExtendDrugName(line);
-                        Console.WriteLine("*S*  After: {0}", previousDrugEffect.Drug);
                     }
-                    currentParagraph.MoveNext();
-                    line = currentParagraph.Current.Trim();
+                    line = paragraphs[++currentParagraph].Trim();
                 }
             }
         }
 
-        private void ParseMultiDoseEffect(IEnumerator<string> currentParagraph)
+        private void ParseMultiDoseEffect(IList<string> paragraphs, ref int currentParagraph)
         {
-            var line = currentParagraph.Current.Trim();
+            var line = paragraphs[currentParagraph].Trim();
 
             if (line.Equals(Resources.MultiDoseEffectHeader))
             {
                 DrugEffect previousDrugEffect = null;
-                currentParagraph.MoveNext(); // Eat the header
-                currentParagraph.MoveNext();
-                line = currentParagraph.Current.Trim();
+                currentParagraph++; // Eat the header
+                line = paragraphs[++currentParagraph].Trim();
 
                 while (!line.Equals(Resources.InterpretationHeader))
                 {
@@ -124,68 +124,57 @@ namespace DocConverter
                     }
                     else
                     {
-                        //Console.WriteLine("*M* Before: {0}", previousDrugEffect.Drug);
                         previousDrugEffect.ExtendDrugName(line);
-                        //Console.WriteLine("*M*  After: {0}", previousDrugEffect.Drug);
                     }
-                    currentParagraph.MoveNext();
-                    line = currentParagraph.Current.Trim();
+                    line = paragraphs[++currentParagraph].Trim();
                 }
             }
         }
 
-        private string ParseExVivo(IEnumerator<string> currentParagraph)
+        private string ParseExVivo(IList<string> paragraphs, ref int currentParagraph)
         {
             string line;
-            currentParagraph.MoveNext();
-            line = currentParagraph.Current.Trim();
+            line = paragraphs[++currentParagraph].Trim();
             while (!line.Equals(Resources.ExVivoHeader))
-            {
-                Interpretation.Add(line);
-                currentParagraph.MoveNext();
-                line = currentParagraph.Current.Trim();
+            {                
+                line = paragraphs[++currentParagraph].Trim();
             }
 
             return line;
         }
 
-        private void ParseSignature(IEnumerator<string> currentParagraph)
+        private void ParseSignature(IList<string> paragraphs, ref int currentParagraph)
         {
-            while (currentParagraph.MoveNext())
+            for(currentParagraph++; currentParagraph < paragraphs.Count; currentParagraph++)
             {
-                var line = currentParagraph.Current.Trim();
+                var line = paragraphs[currentParagraph].Trim();
                 {
                     Signature.Add(line);
                 }
             }
         }
 
-        private void ParseHeaderInfo(IEnumerator<string> currentParagraph)
+        private void ParseHeaderInfo(IList<string> paragraphs, ref int currentParagraph)
         {
-            ParseLine(currentParagraph.Current.Trim(), out _patient, out _assayDate);
+            ParseLine(paragraphs[currentParagraph].Trim(), out _patient, out _assayDate);
 
-            currentParagraph.MoveNext();
-            ParseLine(currentParagraph.Current.Trim(), out _dx, out _assayQuality);
+            ParseLine(paragraphs[++currentParagraph].Trim(), out _dx, out _assayQuality);
 
-            currentParagraph.MoveNext();
-            ParseLine(currentParagraph.Current.Trim(), out _priorRx, out _reportDate);
+            ParseLine(paragraphs[++currentParagraph].Trim(), out _priorRx, out _reportDate);
 
-            currentParagraph.MoveNext();
-            ParseLine(currentParagraph.Current.Trim(), out _physician, out _specimenNumber);
+            ParseLine(paragraphs[++currentParagraph].Trim(), out _physician, out _specimenNumber);
 
-            currentParagraph.MoveNext();
+            currentParagraph++;
         }
 
-        private void VerifyHeader(IEnumerator<string> currentParagraph)
+        private void VerifyHeader(IList<string>paragraphs, ref int currentParagraph)
         {
-            currentParagraph.MoveNext();
-
-            if (!currentParagraph.Current.Trim().Equals(Resources.ReportHeader))
+            if (!paragraphs[currentParagraph].Trim().Equals(Resources.ReportHeader))
             {
-                Console.WriteLine("### !!!! Wrong Header: " + currentParagraph.Current);
+                Console.WriteLine("### !!!! Wrong Header: " + paragraphs[currentParagraph]);
             }
 
-            currentParagraph.MoveNext();
+            currentParagraph++;
         }
 
         private void ParseLine(string paragraph, out string leftValue, out string rightValue)
@@ -223,10 +212,8 @@ namespace DocConverter
             }
 
             report.AppendLine("###" + Resources.ExVivoHeader);
-            foreach (var line in Interpretation)
-            {
-                report.AppendLine(line);
-            }
+            report.AppendLine("###" + Resources.DataAnalysis);
+            report.AppendLine("###" + Resources.DataAnalysisNote);
 
             report.AppendLine("### Signature");
             foreach (var line in Signature)

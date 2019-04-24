@@ -28,7 +28,7 @@
         <Button Content="Select Output File" Grid.Column="2" HorizontalAlignment="Left" Height="26" Margin="99.2,136,0,0" VerticalAlignment="Top" Width="111" Click="OutputFileButton_Click"/>
         <Button x:Name="ConvertButton" Content="Convert !" Grid.Column="1" HorizontalAlignment="Left" Margin="85,203,0,0" VerticalAlignment="Top" Width="91" FontSize="16" FontWeight="Bold" IsEnabled="False" Click="ConvertButton_Click"/>
         <Button x:Name="ViewEditButton" Content="View/Edit Output" Grid.Column="1" HorizontalAlignment="Left" Margin="465,203,0,0" VerticalAlignment="Top" Width="140" FontSize="16" Click="ViewEditButton_Click" IsEnabled="False" Grid.ColumnSpan="2"/>
-        <Image Grid.ColumnSpan="2" Margin="21,19,409.8,186.4" Source="logo.png" Stretch="Fill"/>
+        <Image Grid.ColumnSpan="2" Margin="21,19,409.8,186.4" Source="logo.png" Stretch="Fill" MouseUp="Image_MouseUp"/>
         <Button x:Name="ExitButton" Content="Exit" Grid.Column="2" HorizontalAlignment="Left" Margin="99.2,203,0,0" VerticalAlignment="Top" Width="111" Height="26" Click="ExitButton_Click"/>
     </Grid>
 </Window>

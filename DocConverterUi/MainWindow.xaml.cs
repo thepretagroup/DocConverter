@@ -114,7 +114,20 @@ namespace DocConverterUi
 
                 var paragraphs = RtfReader.ReadParagraphs(filename);
                 var report = new Report();
-                report.Parse(paragraphs);
+                try
+                {
+                    report.Parse(paragraphs);
+                }
+                catch (ParseException ex)
+                {
+                    Console.WriteLine(">>> Input parsing error! {0}\n{1}", ex.Message, ex.InnerException.Message);
+
+                    MessageBox.Show(ex.Message, "Invalid Input File", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+
+                    return;
+                }
+
                 reports.Add(report);
             }
 
@@ -150,6 +163,12 @@ namespace DocConverterUi
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 Application.Current.Shutdown();
             }
+        }
+
+        private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            MessageBox.Show(Properties.Resources.Instructions,"Instructions",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

@@ -61,6 +61,24 @@ namespace DocConverter.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Laboratory results represent only one part of the overall determination of therapy for patients and do not guarantee outcomes nor indicate the specific drugs that should be used in a particular patient..
+        /// </summary>
+        internal static string DataAnalysis {
+            get {
+                return ResourceManager.GetString("DataAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to * The following compounds serve as in vitro surrogates for their respective drug classes, e.g., Cytoxan: = Cyclophosphamide, Ifosfamide, Melphalan, Chlorambucil and related mustard alkylators; Cisplatin: = Carboplatin; Doxorubicin: = Daunorubicin and Idarubicin; Trimetrexate: = Methotrexate; 5Fu + Interferon: = Xeloda.
+        /// </summary>
+        internal static string DataAnalysisNote {
+            get {
+                return ResourceManager.GetString("DataAnalysisNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ex Vivo best regimen (EVBR®) would be.
         /// </summary>
         internal static string ExVivoHeader {

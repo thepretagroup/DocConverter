@@ -117,29 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DataAnalysis" xml:space="preserve">
-    <value>Laboratory results represent only one part of the overall determination of therapy for patients and do not guarantee outcomes nor indicate the specific drugs that should be used in a particular patient.</value>
-  </data>
-  <data name="DataAnalysisNote" xml:space="preserve">
-    <value>* The following compounds serve as in vitro surrogates for their respective drug classes, e.g., Cytoxan: = Cyclophosphamide, Ifosfamide, Melphalan, Chlorambucil and related mustard alkylators; Cisplatin: = Carboplatin; Doxorubicin: = Daunorubicin and Idarubicin; Trimetrexate: = Methotrexate; 5Fu + Interferon: = Xeloda</value>
-  </data>
-  <data name="ExVivoHeader" xml:space="preserve">
-    <value>Ex Vivo best regimen (EVBR®) would be</value>
-  </data>
-  <data name="InterpretationHeader" xml:space="preserve">
-    <value>INTERPRETATION:</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Logo_Nagourney_Cancer_Institute" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Logo Nagourney Cancer Institute.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MultiDoseEffectHeader" xml:space="preserve">
-    <value>MULTIPLE DRUG DOSE EFFECT ANALYSIS</value>
-  </data>
-  <data name="ReportHeader" xml:space="preserve">
-    <value>EVA-PCD FUNCTIONAL PROFILE</value>
-  </data>
-  <data name="SingleDoseEffectHeader" xml:space="preserve">
-    <value>SINGLE DRUG DOSE EFFECT ANALYSIS</value>
+  <data name="Instructions" xml:space="preserve">
+    <value>1. Click 'Select Input File' button &amp; browse to file
+    - This directory will be saved in the registry for next time
+2. Click 'Select Output File' and confirm directory &amp; name
+3. Click 'Convert!' to translate the file
+4. Click 'View/Edit Output' to validate output
+5. Repeat steps 1-4
+6. Click 'Exit' to end application</value>
   </data>
 </root>

@@ -99,10 +99,9 @@ namespace DocConverter
 
             document.InsertParagraph("DATA ANALYSIS:").Font("Arial").FontSize(14).Bold().Alignment = Alignment.left;
 
-            foreach (var interpretationLine in report.Interpretation)
-            {
-                document.InsertParagraph(interpretationLine).Font("Arial").FontSize(10);
-            }
+            document.InsertParagraph(Resources.DataAnalysis).Font("Arial").FontSize(10);
+            document.InsertParagraph();
+            document.InsertParagraph(Resources.DataAnalysisNote ).Font("Arial").FontSize(10);
         }
 
         private void WriteSignature(DocX document, Report report)
