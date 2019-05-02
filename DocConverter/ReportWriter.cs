@@ -120,7 +120,7 @@ namespace DocConverter
             row.Cells[0].Paragraphs[0].Append(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
 
             foreach (var drugEffect in drugEffects
-                .FindAll(de =>  !de.Interpretation.Contains("Active"))
+                .FindAll(de => !de.Interpretation.Contains("Active"))
                 .OrderBy(de => de.ExVivo.Rank)
                 .ThenBy(de => de.Drug))
             {
@@ -182,7 +182,15 @@ namespace DocConverter
             WriteSpecLine(document, "Patient:", report.Patient, "Assay Date:", report.AssayDate);
             WriteSpecLine(document, "Dx:", report.Dx, "Assay Quality:", "" /* report.AssayQuality */);
             WriteSpecLine(document, "Prior Rx:", report.PriorRx, "Report Date:", report.ReportDate);
-            WriteSpecLine(document, "Physician:", report.Physician, "Specimen Number:", report.SpecimenNumber);
+
+            var physicianTitle = "Physician:";
+            var specimenNumbertitle = "Specimen Number:";
+            var specimenNumber = report.SpecimenNumber;
+            foreach (var physician in report.Physician)
+            {
+                WriteSpecLine(document, physicianTitle, physician, specimenNumbertitle, specimenNumber);
+                physicianTitle = specimenNumbertitle = specimenNumber = string.Empty;
+            }
         }
 
         private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName, string rightValue)

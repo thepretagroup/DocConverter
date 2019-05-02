@@ -12,7 +12,7 @@ namespace DocConverter
         private string _patient;
         private string _dx;
         private string _priorRx;
-        private string _physician;
+        private List<string> _physician = new List<string>();
         private string _assayDate;
         private string _assayQuality;
         private string _reportDate;
@@ -21,7 +21,7 @@ namespace DocConverter
         public string Patient { get => _patient; }
         public string Dx { get => _dx; }
         public string PriorRx { get => _priorRx; }
-        public string Physician { get => _physician; }
+        public string[] Physician { get => _physician.ToArray(); }
         public string AssayDate { get => _assayDate; }
         public string AssayQuality { get => _assayQuality; }
         public string ReportDate { get => _reportDate; }
@@ -49,10 +49,29 @@ namespace DocConverter
                 ParseExVivo(paragraphs, ref currentParagraph);
 
                 ParseSignature(paragraphs, ref currentParagraph);
+
+                if (currentParagraph < paragraphs.Count)
+                {
+                    SearchForMoreDoctors(paragraphs, ref currentParagraph);
+                }
             }
             catch (Exception ex)
             {
                 throw new ParseException("Input file parsing error in paragraph #" + currentParagraph, ex);
+            }
+        }
+
+        private void SearchForMoreDoctors(IList<string> paragraphs, ref int currentParagraph)
+        {
+            for (currentParagraph++; currentParagraph < paragraphs.Count; currentParagraph++)
+            {
+                var line = paragraphs[currentParagraph].Trim();
+
+                var items = line.Split('\t');
+                if (items.Length == 4 && items[0].Equals("Physician:"))
+                {
+                    _physician.Add(items[1]);
+                }
             }
         }
 
@@ -148,9 +167,12 @@ namespace DocConverter
             for(currentParagraph++; currentParagraph < paragraphs.Count; currentParagraph++)
             {
                 var line = paragraphs[currentParagraph].Trim();
+                if (line.Equals(Resources.ReportHeader))
                 {
-                    Signature.Add(line);
+                    Console.WriteLine("New page found");
+                    break;
                 }
+                Signature.Add(line);
             }
         }
 
@@ -162,7 +184,8 @@ namespace DocConverter
 
             ParseLine(paragraphs[++currentParagraph].Trim(), out _priorRx, out _reportDate);
 
-            ParseLine(paragraphs[++currentParagraph].Trim(), out _physician, out _specimenNumber);
+            ParseLine(paragraphs[++currentParagraph].Trim(), out string physician, out _specimenNumber);
+            _physician.Add(physician);
 
             currentParagraph++;
         }
@@ -191,7 +214,7 @@ namespace DocConverter
             report.AppendLine(SpecLine("Patient", Patient, "Assay Date", AssayDate));
             report.AppendLine(SpecLine("Dx", Dx, "Assay Quality", AssayQuality));
             report.AppendLine(SpecLine("Prior Rx", PriorRx, "Report Date", ReportDate));
-            report.AppendLine(SpecLine("Physician", Physician, "Specimen Number", SpecimenNumber));
+            report.AppendLine(SpecLine("Physician", Physician[0], "Specimen Number", SpecimenNumber));
 
             if (DrugEffects.Count > 0)
             {
