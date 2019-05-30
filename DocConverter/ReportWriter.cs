@@ -69,7 +69,7 @@ namespace DocConverter
                     }
                     if (report.MultiDrugEffects.Count > 0)
                     {
-                        WriteDrugEffects(table, Resources.MultiDoseEffectHeader, report.MultiDrugEffects.ToList<DrugEffect>()); //  .Cast<IDrugEffect>().ToList());
+                        WriteDrugEffects(table, Resources.MultiDoseEffectHeader, report.MultiDrugEffects.ToList<DrugEffect>());
                     }
                     firstReport = false;
                 }
@@ -81,7 +81,6 @@ namespace DocConverter
 
                 WriteSignature(document, Reports[0]);
 
-                // Save this document to disk.
                 document.Save();
             }
         }
@@ -120,8 +119,8 @@ namespace DocConverter
             row.Cells[0].Paragraphs[0].Append(header).Font("Arial").FontSize(14).Bold().Alignment = Alignment.center;
 
             foreach (var drugEffect in drugEffects
-                .FindAll(de => !de.Interpretation.Contains("Active"))
                 .OrderBy(de => de.ExVivo.Rank)
+                .ThenBy(de => (de is MultiDrugEffect) ? (de as MultiDrugEffect).ExVivoSynergy.Rank : 1)
                 .ThenBy(de => de.Drug))
             {
                 row = table.InsertRow();
@@ -133,14 +132,13 @@ namespace DocConverter
                 }
                 if (drugEffect is MultiDrugEffect)
                 {
-                    row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).Synergy).FontSize(10d);
+                    row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).ExVivoSynergy.Synergy).FontSize(10d);
                 }
                 var exVivoInterpretation = row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivo.Interpretation).FontSize(10d);
                 if (drugEffect.ExVivo.Rank == 1)
                 {
                     BoldItalicize(exVivoInterpretation);
                 }
-
             }
         }
 

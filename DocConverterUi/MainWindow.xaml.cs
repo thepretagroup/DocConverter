@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -111,11 +112,10 @@ namespace DocConverterUi
             foreach (var filename in
                     InputFileTextBox.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
             {
-
-                var paragraphs = RtfReader.ReadParagraphs(filename);
                 var report = new Report();
                 try
                 {
+                    var paragraphs = RtfReader.ReadParagraphs(filename);
                     report.Parse(paragraphs);
                 }
                 catch (ParseException ex)
@@ -127,6 +127,26 @@ namespace DocConverterUi
 
                     return;
                 }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(">>> Input File error! {0}", ex.Message);
+
+                    MessageBox.Show(ex.Message, "Input File Read Error", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(">>> Input File error! {0}", ex.Message);
+
+                    MessageBox.Show(ex.Message, "Input File Error", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+
+                    return;
+                }
+
+
 
                 reports.Add(report);
             }
@@ -135,7 +155,19 @@ namespace DocConverterUi
             {
                 var docxOutputFile = OuputFileTextBox.Text;
                 var reportWriter = new ReportWriter(reports);
-                reportWriter.CreateDocX(docxOutputFile);
+                try
+                {
+                    reportWriter.CreateDocX(docxOutputFile);
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(">>> Output File error! {0}", ex.Message);
+
+                    MessageBox.Show(ex.Message, "Output File Error", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+
+                    return;
+                }
 
                 ConvertButton.IsEnabled = false;
                 ViewEditButton.IsEnabled = true;

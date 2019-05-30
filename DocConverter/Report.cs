@@ -128,7 +128,7 @@ namespace DocConverter
                             drugEntryItems.Insert(1, string.Empty);
                         }
 
-                        if (drugEntryItems.Count() == 6)
+                        if (drugEntryItems.Count() == 6 && !string.IsNullOrEmpty(drugEntryItems[4]))
                         {
                             var multiDrugEffect = new MultiDrugEffect(
                                 drugEntryItems[0], drugEntryItems[1], drugEntryItems[2], drugEntryItems[3], drugEntryItems[4], drugEntryItems[5]);
