@@ -17,11 +17,13 @@ namespace DocConverterUi
 
         private string InputFileDirectory
         {
-            get => ReadFromRegistry(@"SOFTWARE\Preta", "InputFileDirectory", 
+            get => ReadFromRegistry(@"SOFTWARE\Preta", "InputFileDirectory",
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             set => WriteToRegistry(@"SOFTWARE\Preta", "InputFileDirectory", value);
         }
-        private string OutputFileDirectory {
+
+        private string OutputFileDirectory
+        {
             get => ReadFromRegistry(@"SOFTWARE\Preta", "OutputFileDirectory",
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             set => WriteToRegistry(@"SOFTWARE\Preta", "OutputFileDirectory", value);
@@ -75,8 +77,8 @@ namespace DocConverterUi
             {
                 var filename = openFileDlg.FileName; // First filename
                 InputFileTextBox.Text = string.Join(Environment.NewLine, openFileDlg.FileNames);
-                InputFileDirectory = System.IO.Path.GetDirectoryName(filename);
-                DefaultOutputFilename = System.IO.Path.GetFileNameWithoutExtension(filename);
+                InputFileDirectory = Path.GetDirectoryName(filename);
+                DefaultOutputFilename = Path.GetFileNameWithoutExtension(filename);
 
                 OuputFileTextBox.Text = string.Empty;
                 ConvertButton.IsEnabled = false;
@@ -87,7 +89,7 @@ namespace DocConverterUi
         private void OutputFileButton_Click(object sender, RoutedEventArgs e)
         {
             // Create OpenFileDialog
-            var openFileDlg = new Microsoft.Win32.SaveFileDialog
+            var openFileDlg = new SaveFileDialog
             {
                 DefaultExt = ".docx",
                 FileName = DefaultOutputFilename + ".docx",
@@ -99,7 +101,7 @@ namespace DocConverterUi
             if (result == true)
             {
                 OuputFileTextBox.Text = openFileDlg.FileName;
-                OutputFileDirectory = System.IO.Path.GetDirectoryName(openFileDlg.FileName);
+                OutputFileDirectory = Path.GetDirectoryName(openFileDlg.FileName);
                 ViewEditButton.IsEnabled = false;
                 ConvertButton.IsEnabled = true;
             }
@@ -145,9 +147,6 @@ namespace DocConverterUi
 
                     return;
                 }
-
-
-
                 reports.Add(report);
             }
 
@@ -182,7 +181,7 @@ namespace DocConverterUi
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("Unable to Open '{0}'{1}{2}", OuputFileTextBox.Text,Environment.NewLine, ex.Message),
+                MessageBox.Show(string.Format("Unable to Open '{0}'{1}{2}", OuputFileTextBox.Text, Environment.NewLine, ex.Message),
                     "Execution Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -199,7 +198,7 @@ namespace DocConverterUi
 
         private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            MessageBox.Show(Properties.Resources.Instructions,"Instructions",
+            MessageBox.Show(Properties.Resources.Instructions, "Instructions",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }

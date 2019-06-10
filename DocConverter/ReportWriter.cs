@@ -47,7 +47,8 @@ namespace DocConverter
                 }
 
                 // Add a title
-                document.InsertParagraph(Resources.ReportHeader).Font("Arial").FontSize(18).Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
+                document.InsertParagraph(Resources.ReportHeader).Font("Arial").FontSize(18)
+                    .Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
 
                 WriteHeaderInfo(document, Reports[0]);
                 document.InsertParagraph().SpacingAfter(20);
@@ -61,7 +62,8 @@ namespace DocConverter
                     {
                         var row = table.InsertRow();
                         row.MergeCells(0, 3);
-                        row.Cells[0].Paragraphs[0].Append("ExVivo Tar,Get Analysis??").Font("Arial").FontSize(14).Bold().UnderlineColor(System.Drawing.Color.Black);
+                        row.Cells[0].Paragraphs[0].Append("ExVivo Tar,Get Analysis??").Font("Arial").FontSize(14)
+                            .Bold().UnderlineColor(System.Drawing.Color.Black);
                     }
                     if (report.DrugEffects.Count > 0)
                     {
@@ -100,7 +102,7 @@ namespace DocConverter
 
             document.InsertParagraph(Resources.DataAnalysis).Font("Arial").FontSize(10);
             document.InsertParagraph();
-            document.InsertParagraph(Resources.DataAnalysisNote ).Font("Arial").FontSize(10);
+            document.InsertParagraph(Resources.DataAnalysisNote).Font("Arial").FontSize(10);
         }
 
         private void WriteSignature(DocX document, Report report)
@@ -126,7 +128,7 @@ namespace DocConverter
                 row = table.InsertRow();
                 row.Cells[0].Paragraphs[0].Append(drugEffect.Drug).FontSize(10d);
                 var exVivoActivity = row.Cells[1].Paragraphs[0].Append(drugEffect.ExVivo.Activity).FontSize(10d);
-                if (drugEffect.ExVivo.Rank == 1)
+                if (drugEffect.ExVivo.Interpretation.Equals("Higher"))
                 {
                     BoldItalicize(exVivoActivity);
                 }
@@ -135,7 +137,7 @@ namespace DocConverter
                     row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).ExVivoSynergy.Synergy).FontSize(10d);
                 }
                 var exVivoInterpretation = row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivo.Interpretation).FontSize(10d);
-                if (drugEffect.ExVivo.Rank == 1)
+                if (drugEffect.ExVivo.Interpretation.Equals("Higher"))
                 {
                     BoldItalicize(exVivoInterpretation);
                 }
@@ -147,7 +149,8 @@ namespace DocConverter
             paragraph.Bold().Italic();
         }
 
-        private Table CreateAnalysisTable(DocX document) {
+        private Table CreateAnalysisTable(DocX document)
+        {
             var table = document.AddTable(4, 4);
 
             table.Design = TableDesign.None;
@@ -194,7 +197,7 @@ namespace DocConverter
         private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName, string rightValue)
         {
             var outputLine = string.Format("{0}\t{1}\t{2}\t{3}", leftName, leftValue, rightName, rightValue);
-            Console.WriteLine("@@@@@@" + outputLine);
+            // Console.WriteLine(">>WriteSpecLine: " + outputLine);
 
             var paragraph = document.InsertParagraph(outputLine)
                 .FontSize(10d)

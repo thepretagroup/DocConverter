@@ -94,7 +94,8 @@ namespace DocConverter
                             var drugEffect = new DrugEffect(drugEntryItems[0], drugEntryItems[1], drugEntryItems[2], drugEntryItems[3]);
                             DrugEffects.Add(drugEffect);
                             previousDrugEffect = drugEffect;
-                        } else
+                        }
+                        else
                         {
                             previousDrugEffect = null;
                         }
@@ -154,8 +155,8 @@ namespace DocConverter
         {
             string line;
             line = paragraphs[++currentParagraph].Trim();
-            while (!line.Equals(Resources.ExVivoHeader))
-            {                
+            while (!line.Contains(Resources.ExVivoHeader))
+            {
                 line = paragraphs[++currentParagraph].Trim();
             }
 
@@ -164,7 +165,7 @@ namespace DocConverter
 
         private void ParseSignature(IList<string> paragraphs, ref int currentParagraph)
         {
-            for(currentParagraph++; currentParagraph < paragraphs.Count; currentParagraph++)
+            for (currentParagraph++; currentParagraph < paragraphs.Count; currentParagraph++)
             {
                 var line = paragraphs[currentParagraph].Trim();
                 if (line.Equals(Resources.ReportHeader))
@@ -190,7 +191,7 @@ namespace DocConverter
             currentParagraph++;
         }
 
-        private void VerifyHeader(IList<string>paragraphs, ref int currentParagraph)
+        private void VerifyHeader(IList<string> paragraphs, ref int currentParagraph)
         {
             if (!paragraphs[currentParagraph].Trim().Equals(Resources.ReportHeader))
             {

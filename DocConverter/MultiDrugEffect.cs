@@ -42,7 +42,6 @@ namespace DocConverter
             Synergy = synergy;
         }
 
-
         public ExVivoSynergyFactor ExVivoSynergy
         {
             get

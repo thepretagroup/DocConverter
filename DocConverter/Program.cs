@@ -22,7 +22,7 @@ namespace DocConverter
             var reportWriter = new ReportWriter(new[] { report });
             reportWriter.CreateDocX(docxOutputFile);
 
-            //Console.WriteLine(report.TextReport());    ///// @@@@
+            //Console.WriteLine(report.TextReport());
         }
     }
 }

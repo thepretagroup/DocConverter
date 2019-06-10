@@ -46,6 +46,7 @@ namespace DocConverter
             {
                 if (string.IsNullOrEmpty(Interpretation) || !ActivityMap.ContainsKey(Interpretation))
                 {
+                    System.Console.WriteLine("UnknownExVivo for '{0}', interpretation = '{1}'", Drug, Interpretation);
                     return UnknownExVivo;
                 }
                 return ActivityMap[Interpretation];
@@ -56,8 +57,6 @@ namespace DocConverter
 
         public DrugEffect(string drug, string ic50, string units, string interpretation)
         {
-            //var drugEntryItems = drugEntryLine.Split('\t');
-
             Drug = drug.Trim();
             IC50 = ic50;
             Units = units;
