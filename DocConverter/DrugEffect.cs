@@ -22,7 +22,7 @@ namespace DocConverter
         protected static readonly ExVivoFactor IntermediateExVivo = new ExVivoFactor("Intermediate", "Average", 2);
         protected static readonly ExVivoFactor ResistantExVivo = new ExVivoFactor("Resistant", "Lower", 3);
         protected static readonly ExVivoFactor ActiveExVivo = new ExVivoFactor("Active", "Higher", 4);
-        protected static readonly ExVivoFactor ModerateExVivo = new ExVivoFactor("Moderately Active", "Average", 5);
+        protected static readonly ExVivoFactor ModeratelyActiveExVivo = new ExVivoFactor("Moderately Active", "Average", 5);
         protected static readonly ExVivoFactor LowerExVivo = new ExVivoFactor("Inactive", "Lower", 6);
         protected static readonly ExVivoFactor UnknownExVivo = new ExVivoFactor("?", "?", 999);
 
@@ -32,7 +32,7 @@ namespace DocConverter
             { "Intermediate", IntermediateExVivo },
             { "Resistant", ResistantExVivo},
             { "Active", ActiveExVivo },
-            { "Moderately Active", ModerateExVivo },
+            { "Moderately Active", ModeratelyActiveExVivo },
             { "Inactive",LowerExVivo },
         };
 
@@ -60,6 +60,8 @@ namespace DocConverter
             Drug = drug.Trim();
             IC50 = ic50;
             Units = units;
+            // Fix possible truncated Moderately Active
+            interpretation = interpretation.StartsWith("Moderately") ? ModeratelyActiveExVivo.Activity : interpretation.Trim();
             Interpretation = interpretation;
         }
 
