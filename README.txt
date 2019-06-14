@@ -1,6 +1,6 @@
 
 To install:
-1. Download directory to your computer
+1. Download NCIDocConverterDeploy_[latest version].zip file to your computer
 2. Extract files
 3. Execute setup.exe in the Deploy directory
     - You may need to accept the lack of a valid certificate
