@@ -1,5 +1,4 @@
 ﻿using DocConverter.Properties;
-using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,7 +12,10 @@ namespace DocConverter
         private const float LetterPageWidth = 8.5f * 72;
         private const float LetterPageHeight = 11f * 72;
         private const float LeftRightMargin = 0.5f * 72;
-        private const float TopBottomMargin = 0.75f * 72;
+        private const float TopMargin = 0.8f * 72;
+        private const float BottomMargin = 0.75f * 72;
+
+        private const bool INCLUDE_LOGO = false;
 
         private IList<Report> Reports { get; set; }
 
@@ -25,25 +27,18 @@ namespace DocConverter
         #region DocX Writer
         public void CreateDocX(string docxOutputFile)
         {
-            // Create a new document.
+            // Create a new document
             using (var document = DocX.Create(docxOutputFile))
             {
                 document.MarginLeft = LeftRightMargin;
                 document.MarginRight = LeftRightMargin;
-                document.MarginTop = TopBottomMargin;
+                document.MarginTop = TopMargin;
                 document.PageWidth = LetterPageWidth;
                 document.PageHeight = LetterPageHeight;
 
-                using (var imageStream = new MemoryStream())
+                if (INCLUDE_LOGO)
                 {
-                    Resources.Logo_Nagourney_Cancer_Institute.Save(imageStream, ImageFormat.Jpeg);
-                    imageStream.Position = 0;
-                    var image = document.AddImage(imageStream);
-                    var picture = image.CreatePicture(
-                        Resources.Logo_Nagourney_Cancer_Institute.Height / 4,
-                        Resources.Logo_Nagourney_Cancer_Institute.Width / 4);
-                    //picture.WrappingStyle = PictureWrapText.WrapBehindText;  // Not available w/ Free version
-                    document.InsertParagraph().AppendPicture(picture).Alignment = Alignment.right;
+                    Include_Logo(document);
                 }
 
                 // Add a title
@@ -51,7 +46,7 @@ namespace DocConverter
                     .Bold().UnderlineStyle(UnderlineStyle.thick).Alignment = Alignment.left;
 
                 WriteHeaderInfo(document, Reports[0]);
-                document.InsertParagraph().SpacingAfter(20);
+                document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(20);
 
                 var table = CreateAnalysisTable(document);
 
@@ -87,27 +82,45 @@ namespace DocConverter
             }
         }
 
-        private void WriteExVivoBest(DocX document)
+        private void Include_Logo(DocX document)
         {
-            document.InsertParagraph().SpacingAfter(24);
+            using (var imageStream = new MemoryStream())
+            {
+                Resources.Logo_Nagourney_Cancer_Institute.Save(imageStream, ImageFormat.Jpeg);
+                imageStream.Position = 0;
+                var image = document.AddImage(imageStream);
+                var picture = image.CreatePicture(
+                    Resources.Logo_Nagourney_Cancer_Institute.Height / 8,
+                    Resources.Logo_Nagourney_Cancer_Institute.Width / 8);
+                //picture.WrappingStyle = PictureWrapText.WrapBehindText;  // Not available w/ Free version
+
+                document.AddHeaders();
+                document.Headers.Odd.Paragraphs[0].Font("Arial").AppendPicture(picture).Alignment = Alignment.right;
+
+            }
+        }
+
+private void WriteExVivoBest(DocX document)
+        {
+            document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(24);
 
             document.InsertParagraph(Resources.ExVivoHeader).Font("Arial").FontSize(12).Bold().Alignment = Alignment.left;
         }
 
         private void WriteInterpretation(DocX document, Report report)
         {
-            document.InsertParagraph().SpacingAfter(24);
+            document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(24);
 
             document.InsertParagraph("DATA ANALYSIS:").Font("Arial").FontSize(14).Bold().Alignment = Alignment.left;
 
             document.InsertParagraph(Resources.DataAnalysis).Font("Arial").FontSize(10);
-            document.InsertParagraph();
+            document.InsertParagraph(string.Empty).Font("Arial");
             document.InsertParagraph(Resources.DataAnalysisNote).Font("Arial").FontSize(10);
         }
 
         private void WriteSignature(DocX document, Report report)
         {
-            document.InsertParagraph().SpacingAfter(24);
+            document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(24);
             foreach (var signatureLine in report.Signature)
             {
                 document.InsertParagraph(signatureLine).Font("Arial").FontSize(12);
@@ -126,17 +139,17 @@ namespace DocConverter
                 .ThenBy(de => de.Drug))
             {
                 row = table.InsertRow();
-                row.Cells[0].Paragraphs[0].Append(drugEffect.Drug).FontSize(10d);
-                var exVivoActivity = row.Cells[1].Paragraphs[0].Append(drugEffect.ExVivo.Activity).FontSize(10d);
+                row.Cells[0].Paragraphs[0].Append(drugEffect.Drug).Font("Arial").FontSize(10d);
+                var exVivoActivity = row.Cells[1].Paragraphs[0].Append(drugEffect.ExVivo.Activity).Font("Arial").FontSize(10d);
                 if (drugEffect.ExVivo.Interpretation.Equals("Higher"))
                 {
                     BoldItalicize(exVivoActivity);
                 }
                 if (drugEffect is MultiDrugEffect)
                 {
-                    row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).ExVivoSynergy.Synergy).FontSize(10d);
+                    row.Cells[2].Paragraphs[0].Append((drugEffect as MultiDrugEffect).ExVivoSynergy.Synergy).Font("Arial").FontSize(10d);
                 }
-                var exVivoInterpretation = row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivo.Interpretation).FontSize(10d);
+                var exVivoInterpretation = row.Cells[3].Paragraphs[0].Append(drugEffect.ExVivo.Interpretation).Font("Arial").FontSize(10d);
                 if (drugEffect.ExVivo.Interpretation.Equals("Higher"))
                 {
                     BoldItalicize(exVivoInterpretation);
@@ -155,17 +168,17 @@ namespace DocConverter
 
             table.Design = TableDesign.None;
             table.AutoFit = AutoFit.ColumnWidth;
-            table.SetWidths(new[] { 225f, 90f, 75f, 120f });
+            table.SetWidths(new[] { 225f, 94f, 80f, 120f });
 
-            table.Rows[0].Cells[1].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
-            table.Rows[0].Cells[2].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
-            table.Rows[0].Cells[3].Paragraphs[0].Append("Ex Vivo").FontSize(10d).Bold();
-            table.Rows[1].Cells[1].Paragraphs[0].Append("Activity").FontSize(10d).Bold();
-            table.Rows[1].Cells[2].Paragraphs[0].Append("Synergy").FontSize(10d).Bold();
-            table.Rows[1].Cells[3].Paragraphs[0].Append("Interpretation").FontSize(10d).Bold();
-            table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").FontSize(10).Bold();
-            table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Times Roman New").FontSize(10d);
-            table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Times Roman New").FontSize(10d);
+            table.Rows[0].Cells[1].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
+            table.Rows[0].Cells[2].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
+            table.Rows[0].Cells[3].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
+            table.Rows[1].Cells[1].Paragraphs[0].Append("Activity").Font("Arial").FontSize(10d).Bold();
+            table.Rows[1].Cells[2].Paragraphs[0].Append("Synergy").Font("Arial").FontSize(10d).Bold();
+            table.Rows[1].Cells[3].Paragraphs[0].Append("Interpretation").Font("Arial").FontSize(10d).Bold();
+            table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").Font("Arial").FontSize(10).Bold();
+            table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Arial").FontSize(10d);
+            table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Arial").FontSize(10d);
 
             var border = new Border(BorderStyle.Tcbs_thick, BorderSize.six, 0, System.Drawing.Color.Black);
             foreach (var cell in table.Rows[3].Cells)
@@ -178,10 +191,10 @@ namespace DocConverter
 
         private void WriteHeaderInfo(DocX document, Report report)
         {
-            document.InsertParagraph().SpacingAfter(30);
+            document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(30);
 
             WriteSpecLine(document, "Patient:", report.Patient, "Assay Date:", report.AssayDate);
-            WriteSpecLine(document, "Dx:", report.Dx, "Assay Quality:", "" /* report.AssayQuality */);
+            WriteSpecLine(document, "Dx:", report.Dx, "Assay Quality:", string.Empty /* report.AssayQuality */);
             WriteSpecLine(document, "Prior Rx:", report.PriorRx, "Report Date:", report.ReportDate);
 
             var physicianTitle = "Physician:";
@@ -200,6 +213,7 @@ namespace DocConverter
             // Console.WriteLine(">>WriteSpecLine: " + outputLine);
 
             var paragraph = document.InsertParagraph(outputLine)
+                .Font("Arial")
                 .FontSize(10d)
                 .Bold()
                 .InsertTabStopPosition(Alignment.left, 100)
