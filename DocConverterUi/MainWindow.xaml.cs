@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Deployment.Application;
 
 namespace DocConverterUi
 {
@@ -198,8 +199,11 @@ namespace DocConverterUi
 
         private void Image_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            MessageBox.Show(Properties.Resources.Instructions, "Instructions",
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            var version = ApplicationDeployment.IsNetworkDeployed ? 
+                ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString(4) : "non-deployed/debug";
+
+            var instructions = string.Format("{0}{1}{1}(version: {2})", Properties.Resources.Instructions, Environment.NewLine, version);
+            MessageBox.Show(instructions, "Instructions", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
