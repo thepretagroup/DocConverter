@@ -61,7 +61,10 @@ namespace DocConverter
             IC50 = ic50;
             Units = units;
             // Fix possible truncated Moderately Active
-            interpretation = interpretation.StartsWith("Moderately") ? ModeratelyActiveExVivo.Activity : interpretation.Trim();
+            if (interpretation != null && interpretation.StartsWith("Moderately"))
+            {
+                interpretation = ModeratelyActiveExVivo.Activity;
+            }
             Interpretation = interpretation;
         }
 
