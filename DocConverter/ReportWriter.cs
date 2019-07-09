@@ -166,7 +166,7 @@ private void WriteExVivoBest(DocX document)
 
             table.Design = TableDesign.None;
             table.AutoFit = AutoFit.ColumnWidth;
-            table.SetWidths(new[] { 225f, 94f, 80f, 120f });
+            table.SetWidths(new[] { 225f, 94f, 80f, 130f });
 
             table.Rows[0].Cells[1].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
             table.Rows[0].Cells[2].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
