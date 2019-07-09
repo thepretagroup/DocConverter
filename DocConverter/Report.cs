@@ -46,6 +46,8 @@ namespace DocConverter
 
                 ParseMultiDoseEffect(paragraphs, ref currentParagraph);
 
+                XelodaRemovalHack(paragraphs, ref currentParagraph);
+
                 ParseExVivo(paragraphs, ref currentParagraph);
 
                 ParseSignature(paragraphs, ref currentParagraph);
@@ -57,7 +59,19 @@ namespace DocConverter
             }
             catch (Exception ex)
             {
-                throw new ParseException("Input file parsing error in paragraph #" + currentParagraph, ex);
+                throw new ParseException(String.Format("Input file parsing error in paragraph # {0}.{1}'{2}'",
+                    currentParagraph, Environment.NewLine, paragraphs[currentParagraph]), ex);
+            }
+        }
+
+        public void XelodaRemovalHack(IList<string> paragraphs, ref int currentParagraph)
+        {
+            for (var i = currentParagraph; i < paragraphs.Count; i++)
+            {
+                if (paragraphs[i].IndexOf("Xeloda", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    paragraphs[i] = string.Empty;
+                }
             }
         }
 
@@ -102,7 +116,10 @@ namespace DocConverter
                     }
                     else
                     {
-                        previousDrugEffect.ExtendDrugName(line);
+                        if (previousDrugEffect != null)
+                        {
+                            previousDrugEffect.ExtendDrugName(line);
+                        }
                     }
                     line = paragraphs[++currentParagraph].Trim();
                 }
@@ -205,8 +222,8 @@ namespace DocConverter
         {
             var items = paragraph.Split('\t');
 
-            leftValue = items[1];
-            rightValue = items[3];
+            leftValue  = (items != null && items.Length > 1) ? items[1] : string.Empty;
+            rightValue = (items != null && items.Length > 3) ? items[3] : string.Empty;
         }
 
         public string TextReport()

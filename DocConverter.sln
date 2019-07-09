@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocConverter", "DocConverter\DocConverter.csproj", "{E377B6EF-E9A7-4B6B-9906-C2CF4BA537AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocConverter.test", "DocConverter.test\DocConverter.test.csproj", "{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "DocConverter.test\Tests.csproj", "{CA4DDA95-4F51-43B4-AAE0-76B0BE2965E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocConverterUi", "DocConverterUi\DocConverterUi.csproj", "{740231AB-327C-43AC-85F4-6D96FE47090C}"
 EndProject
