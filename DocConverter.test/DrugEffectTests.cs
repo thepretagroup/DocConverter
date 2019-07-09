@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 
 
-namespace DocConverter.test
+namespace DocConverter.Tests
 {
     class DrugEffectTests
     {
@@ -27,9 +27,9 @@ namespace DocConverter.test
         [TestCase("Non Existent Value", "?")] 
         [TestCase("", "?")]
         [TestCase(null, "?")]
-        public void ExVivoInterpretationTest(string interprectation, string ExpectedExVivoInterpretation)
+        public void ExVivoInterpretationTest(string interpretation, string ExpectedExVivoInterpretation)
         {
-            var de = new DrugEffect("tylenol", "123", "ug/ml", interprectation);
+            var de = new DrugEffect("tylenol", "123", "ug/ml", interpretation);
 
             Assert.AreEqual(ExpectedExVivoInterpretation, de.ExVivo.Interpretation);
         }
@@ -56,9 +56,9 @@ namespace DocConverter.test
         [TestCase("Non Existent Value", "?")]
         [TestCase("", "?")]
         [TestCase(null, "?")]
-        public void ExVivoInterpretationMultiTest(string interprectation, string ExpectedExVivoInterpretation)
+        public void ExVivoInterpretationMultiTest(string interpretation, string ExpectedExVivoInterpretation)
         {
-            var mde = new MultiDrugEffect("tylenol", "1:2", "123", "ug/ml", interprectation, "N/A");
+            var mde = new MultiDrugEffect("tylenol", "1:2", "123", "ug/ml", interpretation, "N/A");
 
             Assert.AreEqual(ExpectedExVivoInterpretation, mde.ExVivo.Interpretation);
         }
