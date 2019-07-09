@@ -12,7 +12,7 @@ namespace DocConverter
         private const float LetterPageWidth = 8.5f * 72;
         private const float LetterPageHeight = 11f * 72;
         private const float LeftRightMargin = 0.5f * 72;
-        private const float TopMargin = 0.8f * 72;
+        private const float TopMargin = 0.80f * 72;
         private const float BottomMargin = 0.75f * 72;
 
         private const bool INCLUDE_LOGO = false;
@@ -121,10 +121,8 @@ private void WriteExVivoBest(DocX document)
         private void WriteSignature(DocX document, Report report)
         {
             document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(24);
-            foreach (var signatureLine in report.Signature)
-            {
-                document.InsertParagraph(signatureLine).Font("Arial").FontSize(12);
-            }
+
+            document.InsertParagraph(Resources.SignatureBlock).Font("Arial").FontSize(12);
         }
 
         private void WriteDrugEffects(Table table, string header, List<DrugEffect> drugEffects)

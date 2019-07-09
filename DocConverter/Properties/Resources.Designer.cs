@@ -125,6 +125,17 @@ namespace DocConverter.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Robert A. Nagourney, MD
+        ///Laboratory and Medical Director
+        ///Nagourney Cancer Institute.
+        /// </summary>
+        internal static string SignatureBlock {
+            get {
+                return ResourceManager.GetString("SignatureBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SINGLE DRUG DOSE EFFECT ANALYSIS.
         /// </summary>
         internal static string SingleDoseEffectHeader {
