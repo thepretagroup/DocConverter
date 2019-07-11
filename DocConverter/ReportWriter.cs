@@ -207,16 +207,18 @@ private void WriteExVivoBest(DocX document)
 
         private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName, string rightValue)
         {
-            var outputLine = string.Format("{0}\t{1}\t{2}\t{3}", leftName, leftValue, rightName, rightValue);
-            // Console.WriteLine(">>WriteSpecLine: " + outputLine);
-
-            var paragraph = document.InsertParagraph(outputLine)
+            var paragraph = document.InsertParagraph(leftName)
                 .Font("Arial")
                 .FontSize(10d)
                 .Bold()
                 .InsertTabStopPosition(Alignment.left, 100)
                 .InsertTabStopPosition(Alignment.left, 300)
                 .InsertTabStopPosition(Alignment.left, 400);
+
+            paragraph.Append("\t" + leftValue).Font("Arial").FontSize(10d);
+            paragraph.Append("\t" + rightName).Font("Arial").FontSize(10d).Bold();
+            paragraph.Append("\t" + rightValue).Font("Arial").FontSize(10d);
+            paragraph.SetLineSpacing(LineSpacingType.Line, 1.5f);
         }
         #endregion
     }
