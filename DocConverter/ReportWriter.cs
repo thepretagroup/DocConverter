@@ -166,7 +166,7 @@ private void WriteExVivoBest(DocX document)
 
             table.Design = TableDesign.None;
             table.AutoFit = AutoFit.ColumnWidth;
-            table.SetWidths(new[] { 225f, 94f, 80f, 130f });
+            table.SetWidths(new[] { 225f, 94f, 80f, 135f });
 
             table.Rows[0].Cells[1].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
             table.Rows[0].Cells[2].Paragraphs[0].Append("Ex Vivo").Font("Arial").FontSize(10d).Bold();
@@ -175,8 +175,8 @@ private void WriteExVivoBest(DocX document)
             table.Rows[1].Cells[2].Paragraphs[0].Append("Synergy").Font("Arial").FontSize(10d).Bold();
             table.Rows[1].Cells[3].Paragraphs[0].Append("Interpretation").Font("Arial").FontSize(10d).Bold();
             table.Rows[2].Cells[0].Paragraphs[0].Append("Drug").Font("Arial").FontSize(10).Bold();
-            table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Arial").FontSize(10d);
-            table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Arial").FontSize(10d);
+            table.Rows[2].Cells[3].Paragraphs[0].Append("Response Expectation").Font("Arial").FontSize(10d).Bold();
+            table.Rows[3].Cells[3].Paragraphs[0].Append("Compared with Database").Font("Arial").FontSize(10d).Bold();
 
             var border = new Border(BorderStyle.Tcbs_thick, BorderSize.six, 0, System.Drawing.Color.Black);
             foreach (var cell in table.Rows[3].Cells)
@@ -192,20 +192,18 @@ private void WriteExVivoBest(DocX document)
             document.InsertParagraph(string.Empty).Font("Arial").SpacingAfter(30);
 
             WriteSpecLine(document, "Patient:", report.Patient, "Assay Date:", report.AssayDate);
-            WriteSpecLine(document, "Dx:", report.Dx, "Assay Quality:", string.Empty /* report.AssayQuality */);
-            WriteSpecLine(document, "Prior Rx:", report.PriorRx, "Report Date:", report.ReportDate);
+            WriteSpecLine(document, "DOB:", string.Empty, "Report Date:", report.ReportDate);
+            WriteSpecLine(document, "Dx:", report.Dx, "Specimen Number:", report.SpecimenNumber);
 
             var physicianTitle = "Physician:";
-            var specimenNumbertitle = "Specimen Number:";
-            var specimenNumber = report.SpecimenNumber;
             foreach (var physician in report.Physician)
             {
-                WriteSpecLine(document, physicianTitle, physician, specimenNumbertitle, specimenNumber);
-                physicianTitle = specimenNumbertitle = specimenNumber = string.Empty;
+                WriteSpecLine(document, physicianTitle, physician);
+                physicianTitle = string.Empty;
             }
         }
 
-        private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName, string rightValue)
+        private void WriteSpecLine(DocX document, string leftName, string leftValue, string rightName = "", string rightValue = "")
         {
             var paragraph = document.InsertParagraph(leftName)
                 .Font("Arial")
