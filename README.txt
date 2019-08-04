@@ -6,6 +6,7 @@ To install:
     - You may need to accept the lack of a valid certificate
 
 To Run:
+0. Clicking the logo pops up instructions for NCI and deployment version number
 1. Click 'Select Input File' button & choose a test file
     - This directory will be saved in the registry for next time
 2. Click 'Select Output File' and confirm directory & name
